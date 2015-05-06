@@ -64,4 +64,11 @@ public class PDRootNode implements TreeNode {
 	public String toString() {
 		return name;
 	}
+
+	// Start the recursive node promotion process on each root node.
+	public void promoteNodes() {
+		for (InstanceNode n : rootNodes) {
+			n.promoteNodes();
+		}
+	}
 }

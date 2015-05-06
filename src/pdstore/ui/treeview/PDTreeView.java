@@ -13,8 +13,6 @@ import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -28,7 +26,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import nz.ac.auckland.se.genoupe.tools.Debug;
-
 import pdstore.Blob;
 import pdstore.GUID;
 import pdstore.PDStore;
@@ -150,6 +147,7 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 		// register mouse listener to handle right-click popup menu interaction
 		final PDTreeView pdTreeView = this;
 		addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseReleased(MouseEvent e) {
 				if (e.isPopupTrigger()) {
 					setSelectionRow(getRowForLocation(e.getX(), e.getY()));

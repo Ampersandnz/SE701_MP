@@ -76,6 +76,7 @@ public class InstanceNode extends PDTreeNode implements TreeNode {
 		// register checkbox menu item to handle check and uncheck
 		final PDTreeView view = treeView;
 		ItemListener listener = new ItemListener() {
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (toggle.isSelected()) {
 					view.getPDTreeModel().setShowUnusedRoles(false);
@@ -368,6 +369,7 @@ public class InstanceNode extends PDTreeNode implements TreeNode {
 	/**
 	 * This method involves pasting the role as well as its content
 	 */
+	@Override
 	public void paste(PDTreeModel pdTreeModel, TreeNode node) {
 		if (pdTreeModel.clipboardItem == null || node instanceof InstanceNode) {
 			return;
@@ -380,7 +382,7 @@ public class InstanceNode extends PDTreeNode implements TreeNode {
 		int numChild = node.getChildCount();
 		for(int i=0; i < numChild; i++){
 			InstanceNode child = ((InstanceNode)(node.getChildAt(i)));
-			pdTreeModel.treeView.store.ensureLink(transaction, (GUID)getValue(), ((RoleNode)node).getRole(), (GUID)child.getValue());
+			pdTreeModel.treeView.store.ensureLink(transaction, getValue(), ((RoleNode)node).getRole(), child.getValue());
 		}
 		pdTreeModel.treeView.store.commit(transaction);
 	}
@@ -398,10 +400,12 @@ public class InstanceNode extends PDTreeNode implements TreeNode {
 		pdTreeModel.treeView.store.commit(transaction);
 	}
 
+	@Override
 	public void copy(PDTreeModel pdTreeModel) {
 		pdTreeModel.clipboardItem = getValue();
 	}
 
+	@Override
 	public void contextMenu(PDTreeView pdTreeView, int x, int y) {
 
 		//This is the paste option which has a 
@@ -762,6 +766,7 @@ public class InstanceNode extends PDTreeNode implements TreeNode {
         });
 	}
 	
+	@Override
 	public void setIcon(Blob image){
 		GUID transaction = treeView.store.begin();
 		treeView.store.setIcon(transaction,getValue(), image);
@@ -769,5 +774,4 @@ public class InstanceNode extends PDTreeNode implements TreeNode {
 		model.refresh((RoleNode)getParent());
 		treeView.setCellRenderer(treeView.render);
 	}
-	
 }

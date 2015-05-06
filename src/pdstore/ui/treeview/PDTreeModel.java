@@ -66,6 +66,10 @@ public class PDTreeModel extends DefaultTreeModel implements
 			instanceNodeMap.put(rootInstance, node);
 			// recursively load children
 			node.doExpandNode(null);
+
+			// Iterate through tree, moving nodes up one level if they are the
+			// only child.
+			rootNode.promoteNodes();
 		}
 
 		// Not utilised at the moment... Would be nice if it was!
@@ -77,6 +81,7 @@ public class PDTreeModel extends DefaultTreeModel implements
 	 * Invoked whenever a change is made to the underlying PDStore model.
 	 * Updates the tree structure to reflect the new model
 	 */
+	@Override
 	public void transactionCommitted(
 			List<PDChange<GUID, Object, GUID>> transaction,
 			List<PDChange<GUID, Object, GUID>> matchedChanges,
