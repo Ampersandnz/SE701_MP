@@ -1,15 +1,21 @@
 package pdstore.ui.treeview;
 
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -157,6 +163,85 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 								e.getX(), e.getY());
 					}
 				}
+			}
+		});
+
+		// register mouse listener to handle mouse-over actions
+		addMouseMotionListener(new MouseMotionAdapter() {
+			PDTreeNode currentNode = null;
+			
+			private boolean hasTask = false;
+			private Timer timer = new Timer();
+			private TimerTask action = new TimerTask() {
+				@Override
+				public void run() {
+					displayWindow(currentNode);
+				}
+			};
+		    
+			@Override
+			public synchronized void mouseMoved(MouseEvent event) {
+				int xLoc = (int) event.getPoint().getX();
+				int yLoc = (int) event.getPoint().getY();
+
+				TreePath pathToNode = getPathForLocation(xLoc, yLoc);
+
+				if (pathToNode == null) {
+					// User is moving mouse around on empty space, so cancel any
+					// window creation in progress.
+
+					// Return the cursor to the default pointer.
+					setCursor(Cursor.getDefaultCursor());
+					currentNode = null;
+
+					action.cancel();
+					hasTask = false;
+				} else {
+					// User hovered over a node, so in 400ms display a window if
+					// they have not moved off it.
+
+					Object hoveredNode = pathToNode.getLastPathComponent();
+					if (hoveredNode instanceof PDTreeNode) {
+						currentNode = (PDTreeNode) hoveredNode;
+					} else {
+						System.out
+								.println("User not hovering over PDTreeNode as expected, was "
+										+ hoveredNode.getClass()
+												.getSimpleName());
+					}
+					
+					// Only create new task if none already exists
+					if (!hasTask) {
+						// Make the cursor the "clickable" hand.
+						setCursor(Cursor
+								.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+						action = new TimerTask() {
+					        @Override
+							public void run() {
+								displayWindow(currentNode);
+					        }
+					    };
+					    
+					    timer.schedule(action, 400);
+						hasTask = true;
+					}
+
+					// TODO: maybe add in some compensation for node-to-node
+					// movements if i can be bothered
+				}
+			}
+				
+			void displayWindow(PDTreeNode node) {
+				System.out.println(currentNode);
+				List<PDTreeNode> children = Collections.list(node.children());
+
+				// TODO: create window with relevant information (list of child
+				// nodes)
+
+				// TODO: Create window thing
+				// TODO: For each child node in children
+				// TODO: Add it's name to the window's text
 			}
 		});
 	}

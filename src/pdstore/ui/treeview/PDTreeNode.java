@@ -53,10 +53,5 @@ public abstract class PDTreeNode extends DynamicNode implements TreeNode {
 		// Refresh the list of children (some may have been deleted in the last
 		// step and replaced by their own children.
 		children = Collections.list(children());
-
-		for (PDTreeNode child : children) {
-			// Call promoteNodes on child
-			child.promoteNodes();
-		}
 	}
 }
