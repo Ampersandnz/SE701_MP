@@ -186,41 +186,57 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 		TreePath pathToNode = getPathForLocation(e.getX(), e.getY());
 
 		if (pathToNode.getLastPathComponent() instanceof PDTreeNode) {
-			PDTreeNode theNode = (PDTreeNode) pathToNode.getLastPathComponent();
+			String toolTip = getToolTipFromNode((PDTreeNode) pathToNode
+					.getLastPathComponent());
 
-			// Ensure children of theNode have been instantiated.
-			// Can safely call doExpandNode with null as the argument is never
-			// actually used in the method itself.
-			theNode.doExpandNode(null);
-
-			// Declare tooltips as html to allow multi-line text.
-			String toolTip = "";
-
-			List<PDTreeNode> children = Collections.list(theNode.children());
-
-			if (children.size() == 0) {
-				// Is a leaf node.
-				toolTip = "Leaf node.";
-				
-			} else {
-				toolTip = "<html>";
-				
-				for (PDTreeNode child : children) {
-					if (child instanceof InstanceNode) {
-						toolTip += ((InstanceNode) child).getName();
-					} else if (child instanceof RoleNode) {
-						toolTip += ((RoleNode) child).getRoleName();
-					}
-					toolTip += "<br>";
-				}
-
-				toolTip += "</html>";
-			}
-			
 			return toolTip;
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Returns the text for a PDTreeNode's mouse-over tooltip (a list of the
+	 * node's children).
+	 *
+	 * @param theNode
+	 *            The target parent node.
+	 * 
+	 * 
+	 * @return The text for the tooltip, consisting of the names of the node's
+	 *         children, separated by new lines.
+	 */
+	public String getToolTipFromNode(PDTreeNode theNode) {
+		// Ensure children of theNode have been instantiated.
+		// Can safely call doExpandNode with null as the argument is never
+		// actually used in the method itself.
+		theNode.doExpandNode(null);
+
+		// Declare tooltips as html to allow multi-line text.
+		String toolTip = "";
+
+		List<PDTreeNode> children = Collections.list(theNode.children());
+
+		if (children.size() == 0) {
+			// Is a leaf node.
+			toolTip = "Leaf node.";
+
+		} else {
+			toolTip = "<html>";
+
+			for (PDTreeNode child : children) {
+				if (child instanceof InstanceNode) {
+					toolTip += ((InstanceNode) child).getName();
+				} else if (child instanceof RoleNode) {
+					toolTip += ((RoleNode) child).getRoleName();
+				}
+				toolTip += "<br>";
+			}
+
+			toolTip += "</html>";
+		}
+
+		return toolTip;
 	}
 
 	PDTreeModel getPDTreeModel() {
