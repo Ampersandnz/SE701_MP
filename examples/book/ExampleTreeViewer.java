@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.ToolTipManager;
 
 import nz.ac.auckland.se.genoupe.tools.Debug;
 import pdstore.GUID;
@@ -17,20 +18,24 @@ public class ExampleTreeViewer {
 	public static void main(String[] args) {
 		Debug.addDebugTopic(EXAMPLE_TREE_VIEWER);
 		PDStore store = new PDStore("MyBookDatabase");
-		
+
 		GUID trans = store.begin();
-        Collection<Object> lib = store.getAllInstancesOfType(trans, BookExample.libraryType);
+		Collection<Object> lib = store.getAllInstancesOfType(trans,
+				BookExample.libraryType);
 		Object[] array = lib.toArray();
 		PDTreeView treeView = new PDTreeView(store, array);
-        
-		JScrollPane scrollPane = new JScrollPane(treeView);
-		
-        JFrame frame = new JFrame("Treeview");
-        frame.setLayout(new BorderLayout());
-        frame.add(scrollPane, BorderLayout.CENTER);
-        frame.setSize(400, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-	}
 
+		JScrollPane scrollPane = new JScrollPane(treeView);
+
+		JFrame frame = new JFrame("Treeview");
+		frame.setLayout(new BorderLayout());
+		frame.add(scrollPane, BorderLayout.CENTER);
+		frame.setSize(400, 400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+
+		// Register the tree with the ToolTipManager so that tooltips can be
+		// displayed on mouse hover.
+		ToolTipManager.sharedInstance().registerComponent(treeView);
+	}
 }
