@@ -207,36 +207,41 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 	 *         children, separated by new lines.
 	 */
 	public String getToolTipFromNode(PDTreeNode theNode) {
-		// Ensure children of theNode have been instantiated.
-		// Can safely call doExpandNode with null as the argument is never
-		// actually used in the method itself.
-		theNode.doExpandNode(null);
+		if (theNode != null) {
+			// Ensure children of theNode have been instantiated.
+			// Can safely call doExpandNode with null as the argument is never
+			// actually used in the method itself.
+			theNode.doExpandNode(null);
 
-		// Declare tooltips as html to allow multi-line text.
-		String toolTip = "";
+			// Declare tooltips as html to allow multi-line text.
+			String toolTip = "";
 
-		List<PDTreeNode> children = Collections.list(theNode.children());
+			List<PDTreeNode> children = Collections.list(theNode.children());
 
-		if (children.size() == 0) {
-			// Is a leaf node.
-			toolTip = "Leaf node.";
+			if (children.size() == 0) {
+				// Is a leaf node.
+				toolTip = "Leaf node.";
 
-		} else {
-			toolTip = "<html>";
+			} else {
+				toolTip = "<html>";
 
-			for (PDTreeNode child : children) {
-				if (child instanceof InstanceNode) {
-					toolTip += ((InstanceNode) child).getName();
-				} else if (child instanceof RoleNode) {
-					toolTip += ((RoleNode) child).getRoleName();
+				for (PDTreeNode child : children) {
+					if (child instanceof InstanceNode) {
+						toolTip += ((InstanceNode) child).getName();
+					} else if (child instanceof RoleNode) {
+						toolTip += ((RoleNode) child).getRoleName();
+					}
+					toolTip += "<br>";
 				}
-				toolTip += "<br>";
+
+				toolTip += "</html>";
 			}
 
-			toolTip += "</html>";
+			return toolTip;
+		} else {
+			// Argument was null.
+			return null;
 		}
-
-		return toolTip;
 	}
 
 	PDTreeModel getPDTreeModel() {
