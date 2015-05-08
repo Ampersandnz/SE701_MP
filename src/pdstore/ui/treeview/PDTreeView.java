@@ -167,17 +167,22 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 
 	@Override
 	public String getToolTipText(MouseEvent e) {
-		// If mouse is not on the window.
+		// If mouse is not on the window, do nothing.
 		if (getRowForLocation(e.getX(), e.getY()) == -1) {
 			return null;
 		}
 
 		TreePath pathToNode = getPathForLocation(e.getX(), e.getY());
+
 		if (pathToNode.getLastPathComponent() instanceof PDTreeNode) {
 			PDTreeNode theNode = (PDTreeNode) pathToNode.getLastPathComponent();
 
-			// TODO: Ensure children of theNode have been instantiated.
+			// Ensure children of theNode have been instantiated.
+			// Can safely call doExpandNode with null as the argument is never
+			// actually used in the method itself.
+			theNode.doExpandNode(null);
 
+			// Declare tooltips as html to allow multi-line text.
 			String toolTip = "<html>";
 
 			List<PDTreeNode> children = Collections.list(theNode.children());
@@ -185,10 +190,8 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 			for (PDTreeNode child : children) {
 				if (child instanceof InstanceNode) {
 					toolTip += ((InstanceNode) child).getName();
-				} else if (child instanceof ComplexRoleNode) {
-					toolTip += ((ComplexRoleNode) child).getRoleName();
-				} else if (child instanceof PrimitiveRoleNode) {
-					toolTip += ((PrimitiveRoleNode) child).getRoleName();
+				} else if (child instanceof RoleNode) {
+					toolTip += ((RoleNode) child).getRoleName();
 				}
 				toolTip += "<br>";
 			}
