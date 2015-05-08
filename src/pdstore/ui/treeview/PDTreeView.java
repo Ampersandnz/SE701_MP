@@ -165,6 +165,17 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 	}
 
 
+	/**
+	 * Overrides default JComponent implementation. When the user's mouse moves
+	 * over a node in the tree, and stays there for long enough, a tooltip is
+	 * displayed listing the names of that node's child nodes. The child nodes
+	 * are immediately instantiated here to ensure that they exist.
+	 *
+	 * @param e
+	 *            A MouseEvent, automatically generated when the mouse moves.
+	 * 
+	 * @return The text for the tooltip.
+	 */
 	@Override
 	public String getToolTipText(MouseEvent e) {
 		// If mouse is not on the window, do nothing.
@@ -183,21 +194,29 @@ public class PDTreeView extends JTree implements TreeExpansionListener,
 			theNode.doExpandNode(null);
 
 			// Declare tooltips as html to allow multi-line text.
-			String toolTip = "<html>";
+			String toolTip = "";
 
 			List<PDTreeNode> children = Collections.list(theNode.children());
 
-			for (PDTreeNode child : children) {
-				if (child instanceof InstanceNode) {
-					toolTip += ((InstanceNode) child).getName();
-				} else if (child instanceof RoleNode) {
-					toolTip += ((RoleNode) child).getRoleName();
+			if (children.size() == 0) {
+				// Is a leaf node.
+				toolTip = "Leaf node.";
+				
+			} else {
+				toolTip = "<html>";
+				
+				for (PDTreeNode child : children) {
+					if (child instanceof InstanceNode) {
+						toolTip += ((InstanceNode) child).getName();
+					} else if (child instanceof RoleNode) {
+						toolTip += ((RoleNode) child).getRoleName();
+					}
+					toolTip += "<br>";
 				}
-				toolTip += "<br>";
+
+				toolTip += "</html>";
 			}
-
-			toolTip += "</html>";
-
+			
 			return toolTip;
 		} else {
 			return null;
