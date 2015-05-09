@@ -1,13 +1,9 @@
 package book;
 
-import java.awt.BorderLayout;
 import java.util.Collection;
 
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-
-import pdstore.*;
-import pdstore.ui.treeview.PDTreeView;
+import pdstore.GUID;
+import pdstore.PDStore;
 
 public class BookExample {
 	/** Edit: Hong Yul Yang 11/07/11 - expanded the data model */
@@ -48,10 +44,11 @@ public class BookExample {
 			"77760e958da911e098a9842b2b9af4fd");
 	static GUID authorLastNameRole = new GUID(
 			"77760e968da911e098a9842b2b9af4fd");
-	static GUID libraryType = new GUID("77760e978da911e098a9842b2b9af4fd");
+	public static GUID libraryType = new GUID(
+			"77760e978da911e098a9842b2b9af4fd");
 	static GUID libraryBookRole = new GUID("77760e998da911e098a9842b2b9af4fd");
 
-	static void createBookModel(PDStore store) {
+	public static void createBookModel(PDStore store) {
 
 		// begin a new database transaction
 		GUID transaction = store.begin();
@@ -110,7 +107,7 @@ public class BookExample {
 	static GUID authorDostoyevsky = new GUID("77760e948da911e298a9842b2b9af4fd");
 	static GUID authorSalinger = new GUID("77760e948da911e398a9842b2b9af4fd");
 
-	static void addSomeData(PDStore store) {
+	public static void addSomeData(PDStore store) {
 
 		// begin a new database transaction
 		GUID transaction = store.begin();
